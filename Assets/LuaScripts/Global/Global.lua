@@ -28,6 +28,7 @@ require "Framework.Updater.Coroutine"
 DataMessageNames = require "DataCenter.Config.DataMessageNames"
 DataManager = require "DataCenter.DataManager"
 ClientData = require "DataCenter.ClientData.ClientData"
+BattleData = require "DataCenter.BattleData.BattleData"
 ServerData = require "DataCenter.ServerData.ServerData"
 UserData = require "DataCenter.UserData.UserData"
 

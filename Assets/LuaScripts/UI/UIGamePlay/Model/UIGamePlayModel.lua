@@ -13,8 +13,8 @@ local function OnDisable(self)
 	self.score = 0
 end
 local function OnScoreChange(self, score)
-	self.score = score
-	self:UIBroadcast(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, math.random(1000,100000))
+	BattleData:GetInstance():SetGameScore(score)
+	self:UIBroadcast(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE)
 end
 
 UIGamePlayModel.OnCreate = OnCreate
