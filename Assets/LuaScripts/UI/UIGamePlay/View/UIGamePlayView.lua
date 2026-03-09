@@ -6,6 +6,14 @@ local score_text_path = "TopUI/UIGameScore/GameScoreText"
 local refresh_btn_path = "ItemUI/RefreshBtn"
 
 local ice_grid_path = "UI/Prefabs/common/IceGrid.prefab"
+local gameplay_icon_path = "UI/Prefabs/common/GamePlayIcon.prefab"
+
+local block_res_path = "UI/Image/GamePlay/"
+
+local ROW = 14
+local COL = 9
+local CELL_SIZE = 98   -- 格子大小，和GridLayout一致
+
 local function OnCreate(self)
 	base.OnCreate(self)
 
@@ -18,10 +26,41 @@ local function OnCreate(self)
     end)
 
 	self:OnGenerateIceGrid()
+	self:GenerateFloorBlock(1, 10)
+	-- self:GenerateFloorBlock(2, 20) 
 end
 
-local function OnGenerateIceGrid()
-	for i = 1, 126, 1 do
+-- 游玩用的Block，生成在Floor上
+local function GenerateFloorBlock(self, floorName)
+    local floor = CS.UnityEngine.GameObject.Find("FloorArea/Floor"..floorName)
+    for r = 1, ROW do
+        for c = 1, COL do
+            local id = (r - 1) * COL + c
+            GameObjectPool:GetInstance():GetGameObjectAsync(gameplay_icon_path, function(inst)
+                inst.transform:SetParent(floor.transform, false)
+				local _type = math.random(1, 6)
+				local block_sprite_name = _type..".png"
+
+                inst.transform:SetParent(floor.transform, false)
+
+                local rect = inst:GetComponent(typeof(CS.UnityEngine.RectTransform))
+
+                local x = (c - 1) * CELL_SIZE
+                local y = -(r - 1) * CELL_SIZE
+
+                rect.anchoredPosition = CS.UnityEngine.Vector2(x, y)
+
+				self:AddComponent(UIImage, inst.gameObject)
+				inst:SetSpriteName(block_sprite_name)
+
+            end)
+
+        end
+    end
+end
+-- 底图
+local function OnGenerateIceGrid(self)
+	for i = 1, ROW * COL, 1 do
 		GameObjectPool:GetInstance():GetGameObjectAsync(ice_grid_path, function(inst)
 			if IsNull(inst) then
 				error("Load chara res err!")
@@ -35,9 +74,6 @@ local function OnGenerateIceGrid()
 			end
 
 			inst.transform:SetParent(chara_root.transform, false)
-			-- inst.transform.localPosition = Vector3.New(-7.86, 50, 5.85)
-
-			-- UIManager:GetInstance():OpenWindow(UIWindowNames.UIBattleMain)
 		end)
 	end
 end
@@ -72,5 +108,6 @@ UIGamePlayView.OnDestroy = OnDestroy
 UIGamePlayView.OnAddListener = OnAddListener
 UIGamePlayView.OnRemoveListener = OnRemoveListener
 UIGamePlayView.OnGenerateIceGrid = OnGenerateIceGrid
+UIGamePlayView.GenerateFloorBlock = GenerateFloorBlock
 
 return UIGamePlayView

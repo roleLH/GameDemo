@@ -21,7 +21,7 @@ local function LoadImageAsync(self, atlas_config, image_name, callback, ...)
 		end
 	end, ...)
 end
-
+	
 -- 从图集异步加载图片：协程方式
 local function CoLoadImageAsync(self, atlas_config, image_name, progress_callback)
 	local sprite = ResourcesManager:GetInstance():CoLoadAsync(path, sprite_type, progress_callback)
