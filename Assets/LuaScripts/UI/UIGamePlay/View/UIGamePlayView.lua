@@ -8,7 +8,7 @@ local refresh_btn_path = "ItemUI/RefreshBtn"
 local ice_grid_path = "UI/Prefabs/common/IceGrid.prefab"
 local gameplay_icon_path = "UI/Prefabs/common/GamePlayIcon.prefab"
 
-local block_res_path = "UI/Image/GamePlay/"
+local block_res_path = "UI/Image/GamePlay"
 
 local ROW = 14
 local COL = 9
@@ -27,7 +27,6 @@ local function OnCreate(self)
 
 	self:OnGenerateIceGrid()
 	self:GenerateFloorBlock(1, 10)
-	-- self:GenerateFloorBlock(2, 20) 
 end
 
 -- 游玩用的Block，生成在Floor上
@@ -40,6 +39,7 @@ local function GenerateFloorBlock(self, floorName)
                 inst.transform:SetParent(floor.transform, false)
 				local _type = math.random(1, 6)
 				local block_sprite_name = _type..".png"
+				local atlas_config = {AtlasPath = block_res_path}
 
                 inst.transform:SetParent(floor.transform, false)
 
@@ -50,8 +50,10 @@ local function GenerateFloorBlock(self, floorName)
 
                 rect.anchoredPosition = CS.UnityEngine.Vector2(x, y)
 
-				self:AddComponent(UIImage, inst.gameObject)
-				inst:SetSpriteName(block_sprite_name)
+				inst.gameObject.name = "GamePlayIcon_"..id
+
+				local image = self:AddComponent(UIImage, inst.gameObject, atlas_config)
+				image:SetSpriteName(block_sprite_name)
 
             end)
 
