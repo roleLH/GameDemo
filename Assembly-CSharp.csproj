@@ -175,6 +175,7 @@
     <Compile Include="Assets\EasyTouchBundle\EasyTouch\Examples\5.X new features\Script\SimpleActionExample.cs" />
     <Compile Include="Assets\EasyTouchBundle\EasyTouchControls\Examples\Version 1.X\FPSExample\FPSPlayerControl.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
+    <Compile Include="Assets\Scripts\GridItem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\Scripts\GameLaunch\GameLaunch.cs" />
     <Compile Include="Assets\Scripts\XLua\Scripts\LuaFunction.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Assets\Scripts\XLua\Scripts\TemplateEngine\TemplateEngine.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\Scripts\XLua\Scripts\CopyByValue.cs" />
+    <Compile Include="Assets\Scripts\Framework\UI\RaycastHelper.cs" />
     <Compile Include="Assets\Scripts\Common\Http\HttpInfo.cs" />
     <Compile Include="Assets\EasyTouchBundle\EasyTouch\Plugins\Engine\EasyTouchInput.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />

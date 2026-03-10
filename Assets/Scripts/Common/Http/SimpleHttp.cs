@@ -23,7 +23,8 @@ public class SimpleHttp : MonoBehaviour
 
     void Update()
     {
-        if (m_info != null && m_www != null)
+        if (m_info != null && 
+            m_www != null)
         {
             m_during += Time.deltaTime;
             if (m_during >= m_info.timeOut)

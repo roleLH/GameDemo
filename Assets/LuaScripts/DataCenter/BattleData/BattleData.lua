@@ -32,7 +32,24 @@ local function AddNewBlock(self, id, floorIndex, block, _type)
 	table.insert(self.gridData[id].blocks[floorIndex],{prefab = block, _type = _type})
 end
 
-local function RemoveBlock(self, id, floorIndex, block, _type)
+local function RemoveBlock(self, id, floorIndex, block)
+
+    local cell = self.gridData[id]
+    if not cell then
+        return
+    end
+
+    local floor = cell.blocks[floorIndex]
+    if not floor then
+        return
+    end
+
+    for i = #floor, 1, -1 do
+        if floor[i].prefab == block then
+            table.remove(floor, i)
+            break
+        end
+    end
 end
 
 local function GetTopBlock(self, id)
@@ -56,5 +73,6 @@ BattleData.SetGameScore = SetGameScore
 BattleData.GetGameScore = GetGameScore
 BattleData.AddNewBlock = AddNewBlock
 BattleData.GetTopBlock = GetTopBlock
+BattleData.RemoveBlock = RemoveBlock
 
 return BattleData

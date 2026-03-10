@@ -52,6 +52,17 @@ local function GenerateFloorBlock(self, floorName)
 
 				inst.gameObject.name = "GamePlayIcon_"..id
 
+				local item = inst:GetComponent(typeof(CS.GridItem))
+				item.gridId = id
+				item.floor = tonumber(floorName)
+
+				-- 如果后续改成挂了多个image，这里换一下写法
+				-- local gridItem = obj:GetComponent(typeof(CS.GridItem))
+
+				-- if not gridItem then
+				-- 	gridItem = obj:GetComponentInParent(typeof(CS.GridItem))
+				-- end
+
 				local image = self:AddComponent(UIImage, inst.gameObject, atlas_config)
 				image:SetSpriteName(block_sprite_name)
 
@@ -104,6 +115,9 @@ local function OnDestroy(self)
 	base.OnDestroy(self)
 end
 
+local function Update(self)
+	self.ctrl:Update(self)
+end
 UIGamePlayView.OnCreate = OnCreate
 UIGamePlayView.OnEnable = OnEnable
 UIGamePlayView.OnDestroy = OnDestroy
@@ -111,5 +125,6 @@ UIGamePlayView.OnAddListener = OnAddListener
 UIGamePlayView.OnRemoveListener = OnRemoveListener
 UIGamePlayView.OnGenerateIceGrid = OnGenerateIceGrid
 UIGamePlayView.GenerateFloorBlock = GenerateFloorBlock
+UIGamePlayView.Update = Update
 
 return UIGamePlayView
