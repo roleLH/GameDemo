@@ -26,4 +26,3 @@ UILoginServerView.OnEnable = OnEnable
 UILoginServerView.OnDestroy = OnDestroy
 
 return UILoginServerView
- 

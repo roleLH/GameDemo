@@ -7,6 +7,7 @@ local refresh_btn_path = "ItemUI/RefreshBtn"
 
 local ice_grid_path = "UI/Prefabs/common/IceGrid.prefab"
 local gameplay_icon_path = "UI/Prefabs/common/GamePlayIcon.prefab"
+local waikuang_res_path = "UI/Prefabs/common/WaiKuang.prefab"
 
 local block_res_path = "UI/Image/GamePlay"
 
@@ -56,6 +57,7 @@ local function GenerateFloorBlock(self, floorName)
 				item.gridId = id
 				item.floor = tonumber(floorName)
 
+				BattleData:GetInstance():AddNewBlock(id, tonumber(floorName), inst, _type)
 				-- 如果后续改成挂了多个image，这里换一下写法
 				-- local gridItem = obj:GetComponent(typeof(CS.GridItem))
 
@@ -96,16 +98,47 @@ local function OnScoreChange(self)
 	self.score_text:SetText(score)
 end
 
+local function SetOnClick(self, id, floor)
+    GameObjectPool:GetInstance():GetGameObjectAsync(waikuang_res_path, function(inst)
+		local gameObject = CS.UnityEngine.GameObject.Find("FloorArea/Floor"..floor.."/GamePlayIcon_"..id)
+        inst.transform:SetParent(gameObject.transform, false)
+	end)
+end
+
+local function OnRemoveBlock(self, canRemove, blocks)
+	-- 能移除，把俩预设删了
+	if canRemove then
+		-- 不能移除，删除waikuang
+		for k,v in pairs(blocks) do
+			local block = v.prefab
+			GameObjectPool:GetInstance():RecycleGameObject(gameplay_icon_path, block.gameObject)
+		end
+	else
+		-- 不能移除，删除waikuang
+		for k,v in pairs(blocks) do
+			local block = v.prefab
+			if block.transform.childCount > 0 then
+				local child = UIUtil.GetChild(block.transform, 0)
+				GameObjectPool:GetInstance():RecycleGameObject(waikuang_res_path, child.gameObject)
+			end
+		end
+	end
+end
+
 local function OnAddListener(self)
 	base.OnAddListener(self)
 	-- UI消息注册
 	self:AddUIListener(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, OnScoreChange)
+	self:AddUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClick)
+	self:AddUIListener(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, OnRemoveBlock)
 end
 
 local function OnRemoveListener(self)
 	base.OnRemoveListener(self)
 	-- UI消息注销
 	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, OnScoreChange)
+	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClick)
+	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, OnRemoveBlock)
 end
 local function OnEnable(self)
 	base.OnEnable(self)

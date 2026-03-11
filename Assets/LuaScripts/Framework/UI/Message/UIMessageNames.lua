@@ -18,7 +18,10 @@ local UIMessageNames = {
 	-- UILogin模块
 	UILOGIN_ON_SELECTED_SVR_CHG = "UILoginOnSelectedSvrChg",
 
-	UIGAMEPLAY_SCORE_CHANGE = "UIGamePlayOnScoreChange",
+	UIGAMEPLAY_SCORE_CHANGE = "UIGamePlayOnScoreChange", -- 分数变动
+	UIGAMEPLAY_ON_CLICK_GRID = "UIGamePlayOnClickGrid", -- 点击格子
+	UIGAMEPLAY_REMOVE_BLOCK = "UIGamePlayRemoveBlock", -- 消除方块
+	UIGAMEPLAY_REMOVE_BLOCK_FAIL = "UIGamePlayRemoveBlockFail", -- 消除方块失败
 }
 
 return ConstClass("UIMessageNames", UIMessageNames)

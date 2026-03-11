@@ -33,11 +33,7 @@ local function OnPointerClick(self, view)
             Logger.Log("Clicked on grid item: " .. name .. " at gridid (" .. item.gridId .. ", floor" .. item.floor .. ")")
         end
 
-        -- 执行逻辑，比如消除
-        -- local gridItem = topObj:GetComponent(typeof(CS.GridItem)) -- 你的格子脚本
-        -- if gridItem then
-        --     self.model:OnClickGrid(gridItem.gridX, gridItem.gridY)
-        -- end
+        self.model:OnClickGrid(item.gridId, item.floor)
     end
 end
 
@@ -50,5 +46,5 @@ end
 
 UIGamePlayCtrl.Update = Update
 UIGamePlayCtrl.Refresh = Refresh
-UIGamePlayCtrl.AddMouseClickEvent = AddMouseClickEvent
+-- UIGamePlayCtrl.AddMouseClickEvent = AddMouseClickEvent
 return UIGamePlayCtrl

@@ -13,6 +13,7 @@ local block_res_path3 = "UI/Image/GamePlay/3.png"
 local block_res_path4 = "UI/Image/GamePlay/4.png"
 local block_res_path5 = "UI/Image/GamePlay/5.png"
 local block_res_path6 = "UI/Image/GamePlay/6.png"
+local waikuang_res_path = "UI/Image/Prefabs/Common/waikuang.png"
 
 -- 创建：准备预加载资源
 local function OnCreate(self)
@@ -24,6 +25,7 @@ local function OnCreate(self)
     self:AddPreloadResource(block_res_path4, typeof(CS.UnityEngine.Sprite))
     self:AddPreloadResource(block_res_path5, typeof(CS.UnityEngine.Sprite))
     self:AddPreloadResource(block_res_path6, typeof(CS.UnityEngine.Sprite))
+    self:AddPreloadResource(waikuang_res_path, typeof(CS.UnityEngine.GameObject))
 end
 
 -- 准备工作
