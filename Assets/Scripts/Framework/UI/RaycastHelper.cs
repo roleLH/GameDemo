@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using XLua;
 
@@ -12,12 +13,17 @@ public static class RaycastHelper
     /// </summary>
     /// <param name="raycaster">UI Canvas 的 GraphicRaycaster</param>
     /// <returns>RaycastResult 列表</returns>
-    public static List<RaycastResult> GetMouseUIRaycastResults(GraphicRaycaster raycaster)
+    public static List<RaycastResult> GetMouseUIRaycastResults(GraphicRaycaster raycaster, RectTransform view, Camera cam)
     {
         if (EventSystem.current == null || raycaster == null)
         {
             Debug.LogWarning("EventSystem 或 GraphicRaycaster 不存在！");
             return new List<RaycastResult>();
+        }
+        var inside = UnityEngine.RectTransformUtility.RectangleContainsScreenPoint(view, Input.mousePosition, cam);
+        if (!inside)
+        {
+            return null;
         }
 
         // 检测鼠标位置下的UI对象

@@ -2,7 +2,22 @@ local RaycastHelper = CS.RaycastHelper.Instance
 
 local UIGamePlayCtrl = BaseClass("UIGamePlayCtrl", UIBaseCtrl)
 local function Refresh(self)
-    self.model:OnScoreChange(tostring(math.random(1000,100000)))
+    local time = os.time()
+    -- self.model:OnScoreChange(tostring(math.random(1000,100000)))
+    -- for i = 1, 10 do
+    while true do
+        local new_time = os.time()
+        if new_time - time > 5 then
+            break
+        end
+        local block1, block2 = BattleData:GetInstance():GetRandomMatchingTypes()
+        if block1 == nil or block2 == nil then
+            Logger.Log("No more matching blocks available.")
+            break
+        end
+        self.model:OnClickGrid(block1)
+        self.model:OnClickGrid(block2)
+    end
 end
 
 local function getNormalLayer(self)-- 找到 NormalLayer
@@ -22,7 +37,8 @@ local function OnPointerClick(self, view)
     -- if not layer then return end
     -- loacl layer = view.transform:Find("UIGamePlay")
     local raycaster = view.canvas.unity_graphic_raycaster
-    local results = CS.RaycastHelper.GetMouseUIRaycastResults(raycaster)
+    local check_area = view.transform:Find("FloorArea")
+    local results = CS.RaycastHelper.GetMouseUIRaycastResults(raycaster, check_area.transform, UIManager:GetInstance().UICamera)
 
     if results and results.Count > 0 then
         -- 第一个就是最上层点击的对象
@@ -33,7 +49,7 @@ local function OnPointerClick(self, view)
             Logger.Log("Clicked on grid item: " .. name .. " at gridid (" .. item.gridId .. ", floor" .. item.floor .. ")")
         end
 
-        self.model:OnClickGrid(item.gridId, item.floor)
+        self.model:OnClickGrid(topObj)
     end
 end
 

@@ -47,7 +47,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 50}
   m_MaxSize: {x: 32384, y: 8096}
   vertical: 1
-  controlID: 135
+  controlID: 108
   draggingID: 0
 --- !u!114 &3
 MonoBehaviour:
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 50}
   m_MaxSize: {x: 32384, y: 8096}
   vertical: 0
-  controlID: 136
+  controlID: 109
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -173,8 +173,8 @@ MonoBehaviour:
     y: 0
     width: 297.33334
     height: 1307.3334
-  m_MinSize: {x: 201, y: 221}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -287,7 +287,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: GameView
+  m_Name: SceneView
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -296,14 +296,14 @@ MonoBehaviour:
     y: 0
     width: 753.33325
     height: 1307.3334
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
-  m_ActualView: {fileID: 18}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
+  m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
   - {fileID: 18}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -448,9 +448,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 6e790000
-    m_LastClickedID: 31086
-    m_ExpandedIDs: 000000009e770000a0770000a2770000a4770000a6770000a8770000aa77000000ca9a3b
+    m_SelectedIDs: 72790000
+    m_LastClickedID: 31090
+    m_ExpandedIDs: 00000000a2770000a4770000a6770000a8770000aa770000ac770000ae77000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -478,7 +478,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000009e770000a0770000a2770000a4770000a6770000a8770000aa770000
+    m_ExpandedIDs: 00000000a2770000a4770000a6770000a8770000aa770000ac770000ae770000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -571,24 +571,24 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: bc1efeff
-      m_LastClickedID: -123204
-      m_ExpandedIDs: 181efeff321efeffbc1efeff8088feff2489feffe4cefeff18dcfeffbcdcfeff2ee9feff6ce9feff82e9feff92e9feffa8e9feff4ceafeffc6f7feffe0f7feff84f8feff1614ffff1a14ffff3014ffffd414ffffd048ffff7449ffff1456ffffb856ffff3072ffffd472ffff8899ffff2c9affff3ec1ffff42c1ffff58c1ffff22c2ffff88eaffff8ceaffffa2eaffff46ebffff20fbfffff4ffffff22770000
+      scrollPos: {x: 0, y: 830.6666}
+      m_SelectedIDs: 4006ffff
+      m_LastClickedID: -63936
+      m_ExpandedIDs: d807ffffc411ffffc811ffffde11ffff8212ffff283cffff2c3cffff423cffffe63cffffb458ffff6259ffff6659ffff7c59ffff205affff24daffff92dbffff96dbffffacdbffff50dcffffe6e6ffff12ecffff16ecffff2cecffffd0ecffff20fbfffff4ffffff26770000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: waikuang(Clone)
+        m_OriginalName: waikuang(Clone)
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -63936
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 7}
       m_SearchString: 
@@ -981,9 +981,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 2.046875, y: -3.3229167, z: 800}
+    m_Target: {x: -2.03125, y: -4.604167, z: 804.1666}
     speed: 2
-    m_Value: {x: 2.046875, y: -3.3229167, z: 800}
+    m_Value: {x: -2.0630426, y: -4.641493, z: 808.3333}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1033,9 +1033,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0.014802202, y: 0.030487662, z: -0.00045148112, w: 0.9994255}
   m_Size:
-    m_Target: 12.397283
+    m_Target: 4.23126
     speed: 2
-    m_Value: 12.397283
+    m_Value: 0.8660254
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1130,7 +1130,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1

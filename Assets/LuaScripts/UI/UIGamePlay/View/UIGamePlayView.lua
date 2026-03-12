@@ -27,45 +27,147 @@ local function OnCreate(self)
     end)
 
 	self:OnGenerateIceGrid()
-	self:GenerateFloorBlock(1, 10)
+	self:GenerateFloorBlock(1)
+	self:GenerateFloorBlock(2)
+	self:GenerateFloorBlock(3)
+end
+
+local function Generate(n, m, floors, typecount)
+	-- 工具函数：洗牌
+	local function shuffle(t)
+		for i = #t, 2, -1 do
+			local j = math.random(i)
+			t[i], t[j] = t[j], t[i]
+		end
+	end
+
+	-- 检查某列是否在已有 floor 重复
+	local function isValid(floorTable, col, candidate)
+		for _, f in ipairs(floorTable) do
+			if f[col] == candidate then return false end
+		end
+		return true
+	end
+
+	-- 生成每层格子
+	local floorsData = {}
+	for f = 1, floors do
+		local floor = {}
+		local layerTypes = {}
+		-- 每层严格两两配对
+		local needed = (n*m)/2
+		for i = 1, needed do
+			local _type = math.random(1, typecount)
+			layerTypes[#layerTypes+1] = _type
+			layerTypes[#layerTypes+1] = _type
+		end
+		shuffle(layerTypes)
+
+		-- 避免同列同 floor 重复
+		for i = 1, n*m do
+			local candidate = layerTypes[i]
+			if not isValid(floorsData, i, candidate) then
+				-- 找一个可以用的 type
+				for j = i+1, #layerTypes do
+					if isValid(floorsData, i, layerTypes[j]) then
+						layerTypes[i], layerTypes[j] = layerTypes[j], layerTypes[i]
+						break
+					end
+				end
+			end
+			floor[i] = layerTypes[i]
+		end
+		floorsData[f] = floor
+	end
+	return floorsData
+end
+
+function GenerateGrid(n, m, floor, typeCount)
+
+    local total = n * m
+    assert(total % 2 == 0, "grid数量必须是偶数")
+
+    local result = {}
+
+    -- 初始化grid
+    for i = 1, total do
+        result[i] = {}
+    end
+
+    for f = 1, floor do
+
+        local fruits = {}
+
+        -- 生成pair
+        for i = 1, total / 2 do
+            local t = math.random(1, typeCount)
+            table.insert(fruits, t)
+            table.insert(fruits, t)
+        end
+
+        -- shuffle
+        for i = total, 2, -1 do
+            local j = math.random(1, i)
+            fruits[i], fruits[j] = fruits[j], fruits[i]
+        end
+
+        -- 填入grid，并保证不同floor不同type
+        for id = 1, total do
+
+            local t = fruits[id]
+
+            if f > 1 then
+                while t == result[id][f - 1] do
+                    t = math.random(1, typeCount)
+                end
+            end
+
+            result[id][f] = t
+        end
+
+    end
+
+    return result
 end
 
 -- 游玩用的Block，生成在Floor上
 local function GenerateFloorBlock(self, floorName)
     local floor = CS.UnityEngine.GameObject.Find("FloorArea/Floor"..floorName)
+	local results = Generate(ROW, COL, floorName, 6)
     for r = 1, ROW do
         for c = 1, COL do
-            local id = (r - 1) * COL + c
             GameObjectPool:GetInstance():GetGameObjectAsync(gameplay_icon_path, function(inst)
-                inst.transform:SetParent(floor.transform, false)
-				local _type = math.random(1, 6)
-				local block_sprite_name = _type..".png"
-				local atlas_config = {AtlasPath = block_res_path}
+            	local id = (r - 1) * COL + c
 
+				-- 设置父物体
                 inst.transform:SetParent(floor.transform, false)
 
-                local rect = inst:GetComponent(typeof(CS.UnityEngine.RectTransform))
-
-                local x = (c - 1) * CELL_SIZE
-                local y = -(r - 1) * CELL_SIZE
-
+				-- 设置位置
+                local rect = inst.transform
+                -- local rect = inst:GetComponent(typeof(CS.UnityEngine.RectTransform))
+                local x = (c - 1) * CELL_SIZE + floorName
+                local y = -(r - 1) * CELL_SIZE + floorName
                 rect.anchoredPosition = CS.UnityEngine.Vector2(x, y)
 
-				inst.gameObject.name = "GamePlayIcon_"..id
+				-- 设置名字
+				inst.gameObject.name = "GamePlayIcon_"..id.."_Floor"..floorName
 
+				-- 设置block类型，随机生成一个类型，存储到BattleData中
+				local _type = results[floorName][c + (r - 1) * COL]
+				BattleData:GetInstance():AddNewBlock(id, tonumber(floorName), inst, _type)
+
+				-- 设置格子组件，记录格子id和floor
 				local item = inst:GetComponent(typeof(CS.GridItem))
 				item.gridId = id
 				item.floor = tonumber(floorName)
+				item._type = _type
 
-				BattleData:GetInstance():AddNewBlock(id, tonumber(floorName), inst, _type)
-				-- 如果后续改成挂了多个image，这里换一下写法
-				-- local gridItem = obj:GetComponent(typeof(CS.GridItem))
-
-				-- if not gridItem then
-				-- 	gridItem = obj:GetComponentInParent(typeof(CS.GridItem))
-				-- end
-
-				local image = self:AddComponent(UIImage, inst.gameObject, atlas_config)
+				-- 设置图标，底图，外框
+				local fruit = inst.transform:Find("Fruit")
+				fruit.gameObject.name = "Fruit"..id.."_Floor"..floorName
+				local block_sprite_name = _type..".png"
+				local atlas_config = {AtlasPath = block_res_path}
+				local image = self:AddComponent(UIImage, fruit.gameObject, atlas_config)
 				image:SetSpriteName(block_sprite_name)
 
             end)
@@ -98,11 +200,13 @@ local function OnScoreChange(self)
 	self.score_text:SetText(score)
 end
 
-local function SetOnClick(self, id, floor)
-    GameObjectPool:GetInstance():GetGameObjectAsync(waikuang_res_path, function(inst)
-		local gameObject = CS.UnityEngine.GameObject.Find("FloorArea/Floor"..floor.."/GamePlayIcon_"..id)
-        inst.transform:SetParent(gameObject.transform, false)
-	end)
+local function SetOnClickGrid(self, select_object)
+    local item = select_object:GetComponent(typeof(CS.GridItem))
+	local id = item.gridId
+	local floor = item.floor
+	Logger.Log("点击了格子 id:"..id.." floor:"..floor)
+	local frame = select_object.transform:Find("waikuang")
+	frame.gameObject:SetActive(true)
 end
 
 local function OnRemoveBlock(self, canRemove, blocks)
@@ -118,8 +222,9 @@ local function OnRemoveBlock(self, canRemove, blocks)
 		for k,v in pairs(blocks) do
 			local block = v.prefab
 			if block.transform.childCount > 0 then
-				local child = UIUtil.GetChild(block.transform, 0)
-				GameObjectPool:GetInstance():RecycleGameObject(waikuang_res_path, child.gameObject)
+				local frame = block.transform:Find("waikuang")
+				frame.gameObject:SetActive(false)
+				-- GameObjectPool:GetInstance():RecycleGameObject(waikuang_res_path, child.gameObject)
 			end
 		end
 	end
@@ -129,7 +234,7 @@ local function OnAddListener(self)
 	base.OnAddListener(self)
 	-- UI消息注册
 	self:AddUIListener(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, OnScoreChange)
-	self:AddUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClick)
+	self:AddUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClickGrid)
 	self:AddUIListener(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, OnRemoveBlock)
 end
 
@@ -137,7 +242,7 @@ local function OnRemoveListener(self)
 	base.OnRemoveListener(self)
 	-- UI消息注销
 	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, OnScoreChange)
-	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClick)
+	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClickGrid)
 	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, OnRemoveBlock)
 end
 local function OnEnable(self)
