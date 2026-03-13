@@ -24,6 +24,10 @@ local function Refresh2(self)
     UIManager:GetInstance():CloseWindow(UIWindowNames.UIGamePlay)
 end
 
+local function Share(self)
+    CS.PlatformAPI.Share()
+end
+
 local function getNormalLayer(self)-- 找到 NormalLayer
     local parent = self.transform
     while parent ~= nil do
@@ -70,5 +74,6 @@ end
 UIGamePlayCtrl.Update = Update
 UIGamePlayCtrl.Refresh = Refresh
 UIGamePlayCtrl.Refresh2 = Refresh2
+UIGamePlayCtrl.Share = Share
 -- UIGamePlayCtrl.AddMouseClickEvent = AddMouseClickEvent
 return UIGamePlayCtrl

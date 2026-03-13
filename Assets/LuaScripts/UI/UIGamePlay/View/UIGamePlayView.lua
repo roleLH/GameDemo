@@ -5,6 +5,7 @@ local base = UIBaseView
 local score_text_path = "TopUI/UIGameScore/GameScoreText"
 local refresh_btn_path = "ItemUI/RefreshBtn"
 local next_game_btn_path = "ItemUI/RefreshBtn2"
+local share_btn_path = "TopUI/UIShareBtn"
 
 local ice_grid_path = "UI/Prefabs/common/IceGrid.prefab"
 local gameplay_icon_path = "UI/Prefabs/common/GamePlayIcon.prefab"
@@ -32,6 +33,10 @@ local function OnCreate(self)
         self.ctrl:Refresh2()
     end)
 
+    self.share_btn = self:AddComponent(UIButton, share_btn_path)
+    self.share_btn:SetOnClick(function()
+        self.ctrl:Share()
+    end)
 	self:StartNewGame()
 end
 

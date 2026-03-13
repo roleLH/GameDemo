@@ -240,6 +240,7 @@
     <Compile Include="Assets\Scripts\Framework\AssetBundle\AsyncOperation\AssetAsyncLoader.cs" />
     <Compile Include="Assets\EasyTouchBundle\EasyTouch\Examples\4.X\SimpleExamples\OneFinger\Swipe.cs" />
     <Compile Include="Assets\Reporter\ReporterMessageReceiver.cs" />
+    <Compile Include="Assets\Scripts\Framework\PlatformAPI\PlatformAPI.cs" />
     <Compile Include="Assets\Scripts\Common\CustomDataStruct\BetterStringBuilder.cs" />
     <Compile Include="Assets\EasyTouchBundle\EasyTouch\Examples\4.X\AdvancedExamples\AutoSelect\MultiLayerUI.cs" />
     <Compile Include="Assets\Scripts\Common\Json\MiniJSON.cs" />
