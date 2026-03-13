@@ -13,7 +13,7 @@ local function OnDisable(self)
 	self.score = 0
 end
 local function OnScoreChange(self, score)
-	BattleData:GetInstance():SetGameScore(score)
+	BattleData:GetInstance():AddGameScore(score)
 	self:UIBroadcast(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE)
 end
 -- 获取id，然后在battle中进行存储，如果已经点击了两个，那么判断两个点击的类型，类型相同，执行消除
@@ -23,8 +23,8 @@ local function OnClickGrid(self, object)
  	if rst == false then
 		self:UIBroadcast(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, object)
 	else
-		local canRemove, blocks = BattleData:GetInstance():OnCheckCanRemove()
-		self:UIBroadcast(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, canRemove, blocks)
+		local canRemove, blocks, over = BattleData:GetInstance():OnCheckCanRemove()
+		self:UIBroadcast(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, canRemove, blocks, over)
 	end
 
 end

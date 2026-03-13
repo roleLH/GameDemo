@@ -14,6 +14,7 @@ local UIWindowNames = {
 	UIStartMain = "UIStartMain",
 	UITestMain = "UITestMain",
     UIGamePlay = "UIGamePlay",
+    UIGameOver = "UIGameOver",
 }
 
 return ConstClass("UIWindowNames", UIWindowNames)

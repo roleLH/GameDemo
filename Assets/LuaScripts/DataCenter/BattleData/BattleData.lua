@@ -16,11 +16,13 @@ local function __init(self)
 		-- }
 	}
     self.clickgrid = {}
+    self.gameover = false
 end
 
-local function SetGameScore(self, score)
-	self.score = score
+local function AddGameScore(self, score)
+	self.score = self.score + score
 end
+
 local function GetGameScore(self)
 	return self.score
 end
@@ -98,6 +100,11 @@ local function OnCheckCanRemove(self)
         return false, blocks
     end
 
+    if self.gridData == nil or next(self.gridData) == nil then
+        self:SetGameOver()
+        return true, blocks, true
+    end
+
     return true, blocks
 end
 
@@ -149,8 +156,25 @@ local function GetRandomMatchingTypes(self)
     return firstBlock.prefab, secondBlock.prefab
 end
 
+local function GetData(self)
+	return self.gridData
+end
+
+local function ClearData(self)
+	self.score = 0
+	self.gridData = {}
+    self.clickgrid = {}
+    self.gameover = false
+end
+
+local function SetGameOver(self)
+    self.gameover = true
+end
+local function GetGameOver(self)
+    return self.gameover
+end
 BattleData.__init = __init
-BattleData.SetGameScore = SetGameScore
+BattleData.AddGameScore = AddGameScore
 BattleData.GetGameScore = GetGameScore
 BattleData.AddNewBlock = AddNewBlock
 BattleData.GetTopBlock = GetTopBlock
@@ -158,5 +182,9 @@ BattleData.RemoveBlock = RemoveBlock
 BattleData.OnClickGrid = OnClickGrid
 BattleData.OnCheckCanRemove = OnCheckCanRemove
 BattleData.GetRandomMatchingTypes = GetRandomMatchingTypes
+BattleData.ClearData = ClearData
+BattleData.GetData = GetData
+BattleData.SetGameOver = SetGameOver
+BattleData.GetGameOver = GetGameOver
 
 return BattleData

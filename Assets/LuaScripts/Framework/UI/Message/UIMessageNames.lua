@@ -22,6 +22,7 @@ local UIMessageNames = {
 	UIGAMEPLAY_ON_CLICK_GRID = "UIGamePlayOnClickGrid", -- 点击格子
 	UIGAMEPLAY_REMOVE_BLOCK = "UIGamePlayRemoveBlock", -- 消除方块
 	UIGAMEPLAY_REMOVE_BLOCK_FAIL = "UIGamePlayRemoveBlockFail", -- 消除方块失败
+	UIGAMEPLAY_NEXT_GAME = "UIGamePlayNextGame", -- 下一关
 }
 
 return ConstClass("UIMessageNames", UIMessageNames)

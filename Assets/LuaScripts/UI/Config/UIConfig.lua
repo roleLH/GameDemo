@@ -8,10 +8,11 @@ local UIModule = {
     UIKan = require "UI.UIKan.UIKanConfig",
     UILoading = require "UI.UILoading.UILoadingConfig",
     UILogin = require "UI.UILogin.UILoginConfig",
-    UILoginServer = require "UI.UILoginServer.UILoginServerConfig",
+    -- UILoginServer = require "UI.UILoginServer.UILoginServerConfig",
     UIStartMain = require "UI.UIStartMain.UIStartMainConfig",
     UITestMain = require "UI.UITestMain.UITestMainConfig",
     UIGamePlay = require "UI.UIGamePlay.UIGamePlayConfig",
+    -- UIGameOver = require "UI.UIGamePlay.UIGamePlayConfig",
 }
 
 

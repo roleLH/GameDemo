@@ -1,4 +1,4 @@
-local RaycastHelper = CS.RaycastHelper.Instance
+local RaycastHelper = CS.RaycastHelper
 
 local UIGamePlayCtrl = BaseClass("UIGamePlayCtrl", UIBaseCtrl)
 local function Refresh(self)
@@ -19,6 +19,10 @@ local function Refresh(self)
         self.model:OnClickGrid(block2)
     end
 end
+local function Refresh2(self)
+    UIManager:GetInstance():OpenWindow(UIWindowNames.UIGameOver)
+    UIManager:GetInstance():CloseWindow(UIWindowNames.UIGamePlay)
+end
 
 local function getNormalLayer(self)-- 找到 NormalLayer
     local parent = self.transform
@@ -38,7 +42,7 @@ local function OnPointerClick(self, view)
     -- loacl layer = view.transform:Find("UIGamePlay")
     local raycaster = view.canvas.unity_graphic_raycaster
     local check_area = view.transform:Find("FloorArea")
-    local results = CS.RaycastHelper.GetMouseUIRaycastResults(raycaster, check_area.transform, UIManager:GetInstance().UICamera)
+    local results = RaycastHelper.GetMouseUIRaycastResults(raycaster, check_area.transform, UIManager:GetInstance().UICamera)
 
     if results and results.Count > 0 then
         -- 第一个就是最上层点击的对象
@@ -55,12 +59,16 @@ end
 
 -- 每帧检测鼠标点击
 local function Update(self, view)
-     if CS.UnityEngine.Input.GetMouseButtonDown(0) then
+    if BattleData:GetInstance():GetGameOver() then
+        return
+    end
+    if CS.UnityEngine.Input.GetMouseButtonDown(0) then
         OnPointerClick(self, view)
     end
 end
 
 UIGamePlayCtrl.Update = Update
 UIGamePlayCtrl.Refresh = Refresh
+UIGamePlayCtrl.Refresh2 = Refresh2
 -- UIGamePlayCtrl.AddMouseClickEvent = AddMouseClickEvent
 return UIGamePlayCtrl

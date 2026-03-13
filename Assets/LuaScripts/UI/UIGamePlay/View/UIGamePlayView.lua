@@ -4,6 +4,7 @@ local base = UIBaseView
 -- 各个组件路径
 local score_text_path = "TopUI/UIGameScore/GameScoreText"
 local refresh_btn_path = "ItemUI/RefreshBtn"
+local next_game_btn_path = "ItemUI/RefreshBtn2"
 
 local ice_grid_path = "UI/Prefabs/common/IceGrid.prefab"
 local gameplay_icon_path = "UI/Prefabs/common/GamePlayIcon.prefab"
@@ -14,6 +15,7 @@ local block_res_path = "UI/Image/GamePlay"
 local ROW = 14
 local COL = 9
 local CELL_SIZE = 98   -- 格子大小，和GridLayout一致
+local TYPE_COUNT = 10   -- 类型数量
 
 local function OnCreate(self)
 	base.OnCreate(self)
@@ -25,11 +27,12 @@ local function OnCreate(self)
     self.refresh_btn:SetOnClick(function()
         self.ctrl:Refresh()
     end)
+    self.refresh_btn2 = self:AddComponent(UIButton, next_game_btn_path)
+    self.refresh_btn2:SetOnClick(function()
+        self.ctrl:Refresh2()
+    end)
 
-	self:OnGenerateIceGrid()
-	self:GenerateFloorBlock(1)
-	self:GenerateFloorBlock(2)
-	self:GenerateFloorBlock(3)
+	self:StartNewGame()
 end
 
 local function Generate(n, m, floors, typecount)
@@ -131,9 +134,8 @@ function GenerateGrid(n, m, floor, typeCount)
 end
 
 -- 游玩用的Block，生成在Floor上
-local function GenerateFloorBlock(self, floorName)
+local function GenerateFloorBlock(self, floorName, results)
     local floor = CS.UnityEngine.GameObject.Find("FloorArea/Floor"..floorName)
-	local results = Generate(ROW, COL, floorName, 6)
     for r = 1, ROW do
         for c = 1, COL do
             GameObjectPool:GetInstance():GetGameObjectAsync(gameplay_icon_path, function(inst)
@@ -153,7 +155,7 @@ local function GenerateFloorBlock(self, floorName)
 				inst.gameObject.name = "GamePlayIcon_"..id.."_Floor"..floorName
 
 				-- 设置block类型，随机生成一个类型，存储到BattleData中
-				local _type = results[floorName][c + (r - 1) * COL]
+			local _type = results[floorName][c + (r - 1) * COL]
 				BattleData:GetInstance():AddNewBlock(id, tonumber(floorName), inst, _type)
 
 				-- 设置格子组件，记录格子id和floor
@@ -161,6 +163,7 @@ local function GenerateFloorBlock(self, floorName)
 				item.gridId = id
 				item.floor = tonumber(floorName)
 				item._type = _type
+				-- local fruit = UIUtil.GetChild(inst.transform, 0)
 
 				-- 设置图标，底图，外框
 				local fruit = inst.transform:Find("Fruit")
@@ -207,16 +210,29 @@ local function SetOnClickGrid(self, select_object)
 	Logger.Log("点击了格子 id:"..id.." floor:"..floor)
 	local frame = select_object.transform:Find("waikuang")
 	frame.gameObject:SetActive(true)
+
+	-- local fruit = UIUtil.GetChild(select_object.transform, 0)
+	-- local image = fruit:GetComponent(typeof(CS.UnityEngine.UI.Image))
+	-- Logger.Log("Highlight material: " .. tostring(image.material.name))
+	-- local mat = image.material
+	-- mat:SetFloat("_Highlight", 5)
 end
 
-local function OnRemoveBlock(self, canRemove, blocks)
+local function OnRemoveBlock(self, canRemove, blocks, over)
 	-- 能移除，把俩预设删了
 	if canRemove then
 		-- 不能移除，删除waikuang
 		for k,v in pairs(blocks) do
 			local block = v.prefab
 			GameObjectPool:GetInstance():RecycleGameObject(gameplay_icon_path, block.gameObject)
+
+			-- local fruit = UIUtil.GetChild(block.transform, 0)
+			-- local image = fruit:GetComponent(typeof(CS.UnityEngine.UI.Image))
+			-- local mat = image.material
+			-- mat:SetFloat("_Highlight", 1)
 		end
+		BattleData:GetInstance():AddGameScore(10)
+		self:OnScoreChange()
 	else
 		-- 不能移除，删除waikuang
 		for k,v in pairs(blocks) do
@@ -226,7 +242,35 @@ local function OnRemoveBlock(self, canRemove, blocks)
 				frame.gameObject:SetActive(false)
 				-- GameObjectPool:GetInstance():RecycleGameObject(waikuang_res_path, child.gameObject)
 			end
+			-- local fruit = UIUtil.GetChild(block.transform, 0)
+			-- local image = fruit:GetComponent(typeof(CS.UnityEngine.UI.Image))
+			-- local mat = image.material
+			-- mat:SetFloat("_Highlight", 1)
 		end
+	end
+	if over then
+		self.ctrl:Refresh2()
+	end
+end
+
+--先清除全部数据，再重新设置
+local function StartNewGame(self)
+	-- local data = BattleData:GetInstance():GetData()
+	-- for k,v in pairs(data) do
+	-- 	for k2,v2 in pairs(v.blocks) do
+	-- 		local block = v2.prefab
+	-- 		GameObjectPool:GetInstance():RecycleGameObject(gameplay_icon_path, block.gameObject)
+	-- 	end
+	-- end
+	BattleData:GetInstance():ClearData()
+	-- GameObjectPool.Cleanup()
+	self:OnScoreChange()
+	-- self:OnGenerateIceGrid()
+	-- self:GenerateFloorBlock(1)
+	-- self:GenerateFloorBlock(2)
+	local results = Generate(ROW, COL, 3, TYPE_COUNT)
+	for i = 1, 3 do
+		 self:GenerateFloorBlock(i, results)
 	end
 end
 
@@ -236,6 +280,7 @@ local function OnAddListener(self)
 	self:AddUIListener(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, OnScoreChange)
 	self:AddUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClickGrid)
 	self:AddUIListener(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, OnRemoveBlock)
+	self:AddUIListener(UIMessageNames.UIGAMEPLAY_NEXT_GAME, StartNewGame)
 end
 
 local function OnRemoveListener(self)
@@ -244,6 +289,7 @@ local function OnRemoveListener(self)
 	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_SCORE_CHANGE, OnScoreChange)
 	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_ON_CLICK_GRID, SetOnClickGrid)
 	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_REMOVE_BLOCK, OnRemoveBlock)
+	self:RemoveUIListener(UIMessageNames.UIGAMEPLAY_NEXT_GAME, StartNewGame)
 end
 local function OnEnable(self)
 	base.OnEnable(self)
@@ -256,6 +302,7 @@ end
 local function Update(self)
 	self.ctrl:Update(self)
 end
+
 UIGamePlayView.OnCreate = OnCreate
 UIGamePlayView.OnEnable = OnEnable
 UIGamePlayView.OnDestroy = OnDestroy
@@ -264,5 +311,7 @@ UIGamePlayView.OnRemoveListener = OnRemoveListener
 UIGamePlayView.OnGenerateIceGrid = OnGenerateIceGrid
 UIGamePlayView.GenerateFloorBlock = GenerateFloorBlock
 UIGamePlayView.Update = Update
+UIGamePlayView.StartNewGame = StartNewGame
+UIGamePlayView.OnScoreChange = OnScoreChange
 
 return UIGamePlayView
