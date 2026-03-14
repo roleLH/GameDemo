@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using XLua;
 
@@ -101,6 +103,7 @@ public static class GenConfig
 		// unity
 		typeof(Action),
         typeof(Action<int>),
+        typeof(Action<float, float>),
         typeof(Action<WWW>),
         typeof(Callback),
         typeof(UnityEngine.Event),
@@ -138,5 +141,70 @@ public static class GenConfig
 		new List<string>(){"System.IO.DirectoryInfo", "Create", "System.Security.AccessControl.DirectorySecurity"},
 		new List<string>(){"UnityEngine.MonoBehaviour", "runInEditMode"},
 		new List<string>(){"UnityEngine.UI.Text", "OnRebuildRequested"},
-	};
+
+        new List<string>(){ "System.Activator", "CreateInstance", "System.ActivationContext" },
+        new List<string>(){ "System.Activator", "CreateInstance", "System.ActivationContext", "System.String[]" },
+
+
+        new List<string>(){ "System.Activator", "CreateInstance", "System.String", "System.String" },
+        new List<string>(){ "System.Activator", "CreateInstance", "System.String", "System.String", "System.Object[]" },
+        new List<string>(){ "System.Activator", "CreateInstance", "System.AppDomain", "System.String", "System.String" },
+        new List<string>(){ "System.Activator", "CreateInstance", "System.Type", "System.String", "System.Object[]" },
+        new List<string>(){ "System.Activator", "CreateInstance", "System.Type", "System.String", "System.String" },
+        new List<string>(){ "System.Activator", "CreateInstance", "System.AppDomain", "System.String", "System.Boolean", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Object[]", "System.Globalization.CultureInfo", "System.Object[]"},
+        new List<string>(){ "System.Activator", "CreateInstance", "System.AppDomain", "System.String", "System.String", "System.Boolean", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Object[]", "System.Globalization.CultureInfo", "System.Object[]"},
+
+        new List<string>(){ "System.Activator", "CreateInstance", "System.String", "System.String", "System.Boolean", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Object[]", "System.Globalization.CultureInfo", "System.Object[]"},
+
+
+
+
+        new List<string>(){ "System.Activator", "CreateInstanceFrom", "System.String", "System.String" },
+        new List<string>(){ "System.Activator", "CreateInstanceFrom", "System.String", "System.String", "System.Object[]" },
+        new List<string>(){ "System.Activator", "CreateInstanceFrom", "System.AppDomain", "System.String", "System.String" },
+        new List<string>(){ "System.Activator", "CreateInstanceFrom", "System.String", "System.String", "System.Boolean", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Object[]", "System.Globalization.CultureInfo", "System.Object[]" },
+        new List<string>(){ "System.Activator", "CreateInstanceFrom", "System.AppDomain", "System.String", "System.String", "System.Boolean", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Object[]", "System.Globalization.CultureInfo", "System.Object[]" },
+
+
+        new List<string>(){ "System.Activator", "CreateComInstanceFrom", "System.String", "System.String" },
+        new List<string>(){ "System.Activator", "CreateComInstanceFrom", "System.String", "System.Byte[]", "System.Configuration.Assemblies.AssemblyHashAlgorithm"},
+        new List<string>(){ "System.Activator", "CreateComInstanceFrom", "System.String", "System.String", "System.Byte[]", "System.Configuration.Assemblies.AssemblyHashAlgorithm"},
+
+
+        new List<string>(){ "System.Activator", "GetObject", "System.Type", "System.String" },
+        new List<string>(){ "System.Activator", "GetObject", "System.Type", "System.String", "System.Object" },
+    
+        new List<string>(){"System.Type", "MakeGenericSignatureType", "System.Type", "System.Type[]"},
+        new List<string>(){"System.Type", "IsCollectible" },
+
+    };
+
+    [BlackList]
+    public static List<Type> BlackGenericTypeList = new List<Type>()
+{
+    typeof(Span<>),
+    typeof(ReadOnlySpan<>),
+    typeof(System.Activator),
+};
+    private static bool IsBlacklistedGenericType(Type type)
+    {
+        if (!type.IsGenericType) return false;
+        return BlackGenericTypeList.Contains(type.GetGenericTypeDefinition());
+    }
+
+    [BlackList]
+    public static Func<MemberInfo, bool> GenericTypeFilter = (memberInfo) =>
+    {
+        switch (memberInfo)
+        {
+            case PropertyInfo propertyInfo:
+                return IsBlacklistedGenericType(propertyInfo.PropertyType);
+            case ConstructorInfo constructorInfo:
+                return constructorInfo.GetParameters().Any(p => IsBlacklistedGenericType(p.ParameterType));
+            case MethodInfo methodInfo:
+                return methodInfo.GetParameters().Any(p => IsBlacklistedGenericType(p.ParameterType));
+            default:
+                return false;
+        }
+    };
 }
