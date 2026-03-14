@@ -37,12 +37,6 @@ local function Start()
 	LogicUpdater:GetInstance():Startup()
 	UIManager:GetInstance():Startup()
 	
-	if Config.Debug then
-		-- 单元测试
-		local UnitTest = require "UnitTest.UnitTestMain"
-		UnitTest.Run()
-	end
-	
 	coroutine.start(function()
 		Initilize()
 		EnterGame()

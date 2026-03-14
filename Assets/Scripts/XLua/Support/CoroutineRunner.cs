@@ -26,7 +26,6 @@ public class CoroutineRunner : MonoBehaviour
 public static class CoroutineRunnerExporter
 {
     [LuaCallCSharp]
-    [Obsolete]
     public static List<Type> LuaCallCSharp = new List<Type>() {
                 typeof(WaitForSeconds),
                 typeof(WaitForEndOfFrame),
