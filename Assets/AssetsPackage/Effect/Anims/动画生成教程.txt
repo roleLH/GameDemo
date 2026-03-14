@@ -1,0 +1,25 @@
+1.
+选中图片，在 Inspector 设置：
+Texture Type → Sprite (2D and UI)
+Sprite Mode → Multiple
+点击Apply保存
+
+2.
+右下角点击Sprite Editor
+点击Slice，选择Grid By Cell Size，选好合适的分辨率
+Apply
+
+3.
+在project中点击图片右边的三角，展开图
+选中所有图shift
+拖入到hierarachy
+
+4.
+ctrl+6，选中samples选择帧率
+
+
+从.anim和.controller重新创建动画
+生成一个prefab
+给prefab添加Animator，选择.controller文件
+给prefab添加SpriteRenderer，选择.anim文件
+ctrl+6预览动画
