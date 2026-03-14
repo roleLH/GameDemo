@@ -239,28 +239,12 @@ public class PackageTool : EditorWindow
             {
                 EditorApplication.delayCall += BuildAssetBundlesForAllChannels;
             }
-            if (GUILayout.Button("Open Current Output", GUILayout.Width(200)))
-            {
-                AssetBundleMenuItems.ToolsOpenOutput();
-            }
-            if (GUILayout.Button("Copy To StreamingAsset", GUILayout.Width(200)))
-            {
-                AssetBundleMenuItems.ToolsCopyAssetbundles();
-            }
         }
         else
         {
             if (GUILayout.Button("Execute Build", GUILayout.Width(200)))
             {
                 EditorApplication.delayCall += BuildAssetBundlesForCurrentChannel;
-            }
-            if (GUILayout.Button("Open Output Folder", GUILayout.Width(200)))
-            {
-                AssetBundleMenuItems.ToolsOpenOutput();
-            }
-            if (GUILayout.Button("Copy To StreamingAsset", GUILayout.Width(200)))
-            {
-                AssetBundleMenuItems.ToolsCopyAssetbundles();
             }
         }
         GUILayout.EndHorizontal();

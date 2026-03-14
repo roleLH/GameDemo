@@ -7,7 +7,10 @@ GameMain = {};
 -- 全局初始化
 local function Initilize()
 	local loadingAssetbundlePath = "UI/Prefabs/View/UILoading.prefab"
-	ResourcesManager:GetInstance():CoLoadAssetBundleAsync(loadingAssetbundlePath)
+
+	ResourcesManager:GetInstance():LoadAssetAsync(loadingAssetbundlePath, typeof(CS.UnityEngine.GameObject), function(go, handle) 
+
+	end)
 end
 
 -- 进入游戏

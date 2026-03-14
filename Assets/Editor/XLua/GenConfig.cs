@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using XLua;
 
 public static class GenConfig
@@ -92,9 +93,11 @@ public static class GenConfig
         typeof(UnityEngine.SceneManagement.SceneManager),
         
         // 其它
-        typeof(PlayerPrefs),
+        //typeof(PlayerPrefs),
         typeof(System.GC),
         typeof(AsyncOperation),
+
+        typeof(AsyncOperationHandle),
     };
 
     //C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface
@@ -104,6 +107,7 @@ public static class GenConfig
 		typeof(Action),
         typeof(Action<int>),
         typeof(Action<float, float>),
+        typeof(Action<AsyncOperationHandle>),
         typeof(Action<WWW>),
         typeof(Callback),
         typeof(UnityEngine.Event),
