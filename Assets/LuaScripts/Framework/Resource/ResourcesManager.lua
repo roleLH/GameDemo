@@ -31,12 +31,7 @@ end
 
 -- 清理资源：切换场景时调用
 local function Cleanup(self)
-	AssetBundleManager:ClearAssetsCache()
-	AssetBundleManager:UnloadAllUnusedResidentAssetBundles()
 	
-	-- TODO：Lua脚本要重新加载，暂时吧，后面缓缓策略
-	local luaAssetbundleName = CS.XLuaManager.Instance.AssetbundleName
-	AssetBundleManager:AddAssetbundleAssetsCache(luaAssetbundleName)
 end
 
 ResourcesManager.LoadAsync = LoadAsync

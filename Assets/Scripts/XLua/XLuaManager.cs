@@ -1,4 +1,5 @@
 ﻿using AssetBundles;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using XLua;
@@ -18,7 +19,7 @@ using XLua;
 [LuaCallCSharp]
 public class XLuaManager : MonoSingleton<XLuaManager>
 {
-    public const string luaAssetbundleAssetName = "Lua";
+    public const string luaAssetbundleAssetName = "Lua.bin.txt";
     public const string luaScriptsFolder = "LuaScripts";
     const string commonMainScriptName = "Common.Main";
     const string gameMainScriptName = "GameMain";
@@ -26,11 +27,10 @@ public class XLuaManager : MonoSingleton<XLuaManager>
     LuaEnv luaEnv = null;
     LuaUpdater luaUpdater = null;
 
+
     protected override void Init()
     {
         base.Init();
-        string path = AssetBundleUtility.PackagePathToAssetsPath(luaAssetbundleAssetName);
-        AssetbundleName = AssetBundleUtility.AssetBundlePathToAssetBundleName(path);
         InitLuaEnv();
     }
 
@@ -155,9 +155,8 @@ public class XLuaManager : MonoSingleton<XLuaManager>
     public static byte[] CustomLoader(ref string filepath)
     {
         string scriptPath = string.Empty;
-        filepath = filepath.Replace(".", "/") + ".lua";
-#if UNITY_EDITOR
-        if (AssetBundleConfig.IsEditorMode)
+        filepath = filepath.Replace(".", "\\") + ".lua";
+#if UNITY_EDITOR && ANDROID
         {
             scriptPath = Path.Combine(Application.dataPath, luaScriptsFolder);
             scriptPath = Path.Combine(scriptPath, filepath);
@@ -166,23 +165,7 @@ public class XLuaManager : MonoSingleton<XLuaManager>
         }
 #endif
 
-        scriptPath = string.Format("{0}/{1}.bytes", luaAssetbundleAssetName, filepath);
-        string assetbundleName = null;
-        string assetName = null;
-        bool status = AssetBundleManager.Instance.MapAssetPath(scriptPath, out assetbundleName, out assetName);
-        if (!status)
-        {
-            Logger.LogError("MapAssetPath failed : " + scriptPath);
-            return null;
-        }
-        var asset = AssetBundleManager.Instance.GetAssetCache(assetName) as TextAsset;
-        if (asset != null)
-        {
-            //Logger.Log("Load lua script : " + scriptPath);
-            return asset.bytes;
-        }
-        Logger.LogError("Load lua script failed : " + scriptPath + ", You should preload lua assetbundle first!!!");
-        return null;
+        return AssetBundleManager.Instance.LoadLuaScript(filepath);
     }
 
     private void Update()

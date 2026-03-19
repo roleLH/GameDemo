@@ -29,5 +29,13 @@
 #include "lua51/lauxlib.h"
 #elif __EMSCRIPTEN__
 //EMSCRIPTEN_ENV_LUA_IMPORT_LOGIC_START
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lua.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lobject.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lstate.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lfunc.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lapi.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lstring.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\ltable.h"
+#include "C:\\Users\\lgh\\Desktop\\Github\\GameDemo\\Assets\\WebGLPlugins\\lauxlib.h"
 //EMSCRIPTEN_ENV_LUA_IMPORT_LOGIC_END
 #endif

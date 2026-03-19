@@ -23,30 +23,22 @@ public class Logger
     public static string DEBUG_BUILD_VER = "HOG_ALPHA_1";
     public static string platChannel = "outnet";
 
-    [Conditional("UNITY_EDITOR")]
-    [Conditional("LOGGER_ON")]
     static public void Log(string s, params object[] p)
     {
         Debug.Log(DateTime.Now + " -- " + (p != null && p.Length > 0 ? string.Format(s, p) : s));
     }
 
-    [Conditional("UNITY_EDITOR")]
-    [Conditional("LOGGER_ON")]
     static public void Log(object o)
     {
         Debug.Log(o);
     }
 
-    [Conditional("UNITY_EDITOR")]
-    [Conditional("LOGGER_ON")]
     public static void LogToMainThread(string s, params object[] p)
     {
         string msg = (p != null && p.Length > 0 ? string.Format(s, p) : s);
         LoggerHelper.Instance.LogToMainThread(LoggerHelper.LOG_TYPE.LOG, msg);
     }
 
-    [Conditional("UNITY_EDITOR")]
-    [Conditional("LOGGER_ON")]
     static public void Assert(bool condition, string s, params object[] p)
     {
         if (condition)

@@ -4,38 +4,27 @@ using AssetBundles;
 using GameChannel;
 using System;
 using XLua;
+using UnityEngine.AddressableAssets;
 
 [Hotfix]
 [LuaCallCSharp]
 public class GameLaunch : MonoBehaviour
 {
     const string launchPrefabPath = "UI/Prefabs/View/UILaunch.prefab";
-    const string noticeTipPrefabPath = "UI/Prefabs/Common/UINoticeTip.prefab";
     GameObject launchPrefab;
-    GameObject noticeTipPrefab;
-    AssetbundleUpdater updater;
+    GameObject launchInst;
 
     IEnumerator Start ()
     {
+        Logger.Log(string.Format("START"));
         LoggerHelper.Instance.Startup();
-#if UNITY_IPHONE
-        UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
-        UnityEngine.iOS.Device.SetNoBackupFlag(Application.persistentDataPath);
-#endif
-
         // 初始化App版本
-        var start = DateTime.Now;
-        yield return InitAppVersion();
-        Logger.Log(string.Format("InitAppVersion use {0}ms", (DateTime.Now - start).Milliseconds));
-
         // 初始化渠道
-        start = DateTime.Now;
-        yield return InitChannel();
-        Logger.Log(string.Format("InitChannel use {0}ms", (DateTime.Now - start).Milliseconds));
-
+        
         // 启动资源管理模块
-        start = DateTime.Now;
+       var start = DateTime.Now;
         yield return AssetBundleManager.Instance.Initialize();
+        yield return AssetBundleManager.Instance.PreLoadAllLuaScripts();
         Logger.Log(string.Format("AssetBundleManager Initialize use {0}ms", (DateTime.Now - start).Milliseconds));
 
         // 启动xlua热修复模块
@@ -43,62 +32,32 @@ public class GameLaunch : MonoBehaviour
         XLuaManager.Instance.Startup();
         string luaAssetbundleName = XLuaManager.Instance.AssetbundleName;
         AssetBundleManager.Instance.SetAssetBundleResident(luaAssetbundleName, true);
-        var abloader = AssetBundleManager.Instance.LoadAssetBundleAsync(luaAssetbundleName);
-        yield return abloader;
-        abloader.Dispose();
+
         XLuaManager.Instance.OnInit();
-        XLuaManager.Instance.StartHotfix();
+        //XLuaManager.Instance.StartHotfix();
         Logger.Log(string.Format("XLuaManager StartHotfix use {0}ms", (DateTime.Now - start).Milliseconds));
 
         // 初始化UI界面
         yield return InitLaunchPrefab();
-        yield return null;
-        yield return InitNoticeTipPrefab();
 
-        // 开始更新
-        if (updater != null)
-        {
-            updater.StartCheckUpdate();
-        }
+        XLuaManager.Instance.StartGame();
+        CustomDataStruct.Helper.Startup();
+        UINoticeTip.Instance.DestroySelf();
+        launchInst.SetActive(false);
+        GameObject.Destroy(launchInst);
         yield break;
 	}
 
     IEnumerator InitAppVersion()
     {
-        var appVersionRequest = AssetBundleManager.Instance.RequestAssetFileAsync(BuildUtils.AppVersionFileName);
-        yield return appVersionRequest;
-        var streamingAppVersion = appVersionRequest.text;
-        appVersionRequest.Dispose();
-
-        var appVersionPath = AssetBundleUtility.GetPersistentDataPath(BuildUtils.AppVersionFileName);
-        var persistentAppVersion = GameUtility.SafeReadAllText(appVersionPath);
-        Logger.Log(string.Format("streamingAppVersion = {0}, persistentAppVersion = {1}", streamingAppVersion, persistentAppVersion));
-
-        // 如果persistent目录版本比streamingAssets目录app版本低，说明是大版本覆盖安装，清理过时的缓存
-        if (!string.IsNullOrEmpty(persistentAppVersion) && BuildUtils.CheckIsNewVersion(persistentAppVersion, streamingAppVersion))
-        {
-            var path = AssetBundleUtility.GetPersistentDataPath();
-            GameUtility.SafeDeleteDir(path);
-        }
-        GameUtility.SafeWriteAllText(appVersionPath, streamingAppVersion);
+        var streamingAppVersion = "1.0.0";
         ChannelManager.instance.appVersion = streamingAppVersion;
         yield break;
     }
 
     IEnumerator InitChannel()
     {
-#if UNITY_EDITOR
-        if (AssetBundleConfig.IsEditorMode)
-        {
-            yield break;
-        }
-#endif
-        var channelNameRequest = AssetBundleManager.Instance.RequestAssetFileAsync(BuildUtils.ChannelNameFileName);
-        yield return channelNameRequest;
-        var channelName = channelNameRequest.text;
-        channelNameRequest.Dispose();
-        ChannelManager.instance.Init(channelName);
-        Logger.Log(string.Format("channelName = {0}", channelName));
+
         yield break;
     }
 
@@ -121,37 +80,23 @@ public class GameLaunch : MonoBehaviour
 
     IEnumerator InitNoticeTipPrefab()
     {
-        var start = DateTime.Now;
-        var loader = AssetBundleManager.Instance.LoadAssetAsync(noticeTipPrefabPath, typeof(GameObject));
-        yield return loader;
-        noticeTipPrefab = loader.asset as GameObject;
-        Logger.Log(string.Format("Load noticeTipPrefab use {0}ms", (DateTime.Now - start).Milliseconds));
-        loader.Dispose();
-        if (noticeTipPrefab == null)
-        {
-            Logger.LogError("LoadAssetAsync noticeTipPrefab err : " + noticeTipPrefabPath);
-            yield break;
-        }
-        var go = InstantiateGameObject(noticeTipPrefab);
-        UINoticeTip.Instance.UIGameObject = go;
         yield break;
     }
 
     IEnumerator InitLaunchPrefab()
     {
         var start = DateTime.Now;
-        var loader = AssetBundleManager.Instance.LoadAssetAsync(launchPrefabPath, typeof(GameObject));
-        yield return loader;
-        launchPrefab= loader.asset as GameObject;
-        Logger.Log(string.Format("Load launchPrefab use {0}ms", (DateTime.Now - start).Milliseconds));
-        loader.Dispose();
+        var handle = Addressables.LoadAssetAsync<GameObject>(launchPrefabPath);
+        yield return handle;
+
+        launchPrefab= handle.Result;
+        handle.Release();
         if (launchPrefab == null)
         {
             Logger.LogError("LoadAssetAsync launchPrefab err : " + launchPrefabPath);
             yield break;
         }
-        var go = InstantiateGameObject(launchPrefab);
-        updater = go.AddComponent<AssetbundleUpdater>();
+        launchInst = InstantiateGameObject(launchPrefab);
         yield break;
     }
 }
