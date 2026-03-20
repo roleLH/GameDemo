@@ -7,6 +7,7 @@
 --]]
 
 local SceneManager = BaseClass("SceneManager", Singleton)
+local AssetBundleManager = CS.AssetBundles.AssetBundleManager.Instance
 
 -- 构造函数
 local function __init(self)
@@ -48,10 +49,10 @@ local function CoInnerSwitchScene(self, scene_config)
 	model.value = model.value + 0.01
 	coroutine.waitforframes(1)
 	-- 同步加载loading场景
-	local scene_mgr = CS.UnityEngine.SceneManagement.SceneManager
 	local resources = CS.UnityEngine.Resources
-	scene_mgr.LoadScene(SceneConfig.LoadingScene.Level)
-	model.value = model.value + 0.01
+	Logger.Log("ttttttttttttttttttt")
+	coroutine.waitforasyncop(AssetBundleManager:LoadSceneAsyncWithHandle(SceneConfig.LoadingScene.Name))
+	model.value = 1
 	coroutine.waitforframes(1)
 	-- GC：交替重复2次，清干净一点
 	collectgarbage("collect")
@@ -59,10 +60,12 @@ local function CoInnerSwitchScene(self, scene_config)
 	collectgarbage("collect")
 	CS.System.GC.Collect()
 	local cur_progress = model.value
+	Logger.Log("dddddddddddddddddddddddddddd")
 	coroutine.waitforasyncop(resources.UnloadUnusedAssets(), function(co, progress)
 		assert(progress <= 1.0, "What's the funck!!!")
 		model.value = cur_progress + 0.1 * progress
 	end)
+	Logger.Log("sssssssssssssssssssssssssss")
 	model.value = cur_progress + 0.1
 	coroutine.waitforframes(1)
 	-- 初始化目标场景
@@ -77,15 +80,14 @@ local function CoInnerSwitchScene(self, scene_config)
 	coroutine.waitforframes(1)
 	-- 异步加载目标场景
 	cur_progress = model.value
-	coroutine.waitforasyncop(scene_mgr.LoadSceneAsync(scene_config.Level), function(co, progress)
-		assert(progress <= 1.0, "What's the funck!!!")
-		model.value = cur_progress + 0.15 * progress
-	end)
-	model.value = cur_progress + 0.15
+	Logger.Log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+	coroutine.waitforasyncop(AssetBundleManager:LoadSceneAsyncWithHandle(scene_config.Name))
+	model.value = 1
 	coroutine.waitforframes(1)
 	-- 准备工作：预加载资源等
 	-- 说明：现在的做法是不热更场景（都是空场景），所以主要的加载时间会放在场景资源的prefab上，这里给65%的进度时间
 	cur_progress = model.value
+	Logger.Log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
 	coroutine.yieldstart(logic_scene.CoOnPrepare, function(co, progress)
 		assert(progress <= 1.0, "Progress should be normalized value!!!")
 		model.value = cur_progress + 0.65 * progress
@@ -94,6 +96,7 @@ local function CoInnerSwitchScene(self, scene_config)
 	coroutine.waitforframes(1)
 	logic_scene:OnComplete()
 	model.value = 1.0
+	Logger.Log("jjjjjjjjjjjjjjjjjjjjjjjjjj")
 	coroutine.waitforframes(3)
 	-- 加载完成，关闭loading界面
 	uimgr_instance:DestroyWindow(UIWindowNames.UILoading)
@@ -130,10 +133,12 @@ local function CoInnerSwitchScene2(self, scene_config)
 	model.value = model.value + 0.01
 	coroutine.waitforframes(1)
 	-- 同步加载loading场景
-	local scene_mgr = CS.UnityEngine.SceneManagement.SceneManager
 	local resources = CS.UnityEngine.Resources
-	scene_mgr.LoadScene(SceneConfig.LoadingScene.Level)
-	model.value = model.value + 0.01
+	Logger.Log("1111111111111111")
+	coroutine.waitforasyncop(AssetBundleManager:LoadSceneAsyncWithHandle(SceneConfig.LoadingScene.Name))
+	model.value = 1
+	Logger.Log("222222222222222222")
+
 	coroutine.waitforframes(1)
 	-- GC：交替重复2次，清干净一点
 	collectgarbage("collect")
@@ -141,6 +146,8 @@ local function CoInnerSwitchScene2(self, scene_config)
 	collectgarbage("collect")
 	CS.System.GC.Collect()
 	local cur_progress = model.value
+	Logger.Log("3333333333333333333333")
+
 	coroutine.waitforasyncop(resources.UnloadUnusedAssets(), function(co, progress)
 		assert(progress <= 1.0, "What's the funck!!!")
 		model.value = cur_progress + 0.1 * progress
@@ -159,7 +166,9 @@ local function CoInnerSwitchScene2(self, scene_config)
 	coroutine.waitforframes(1)
 	-- 异步加载目标场景
 	cur_progress = model.value
-	coroutine.waitforasyncop(scene_mgr.LoadSceneAsync(scene_config.Level), function(co, progress)
+	Logger.Log("444444444444444444")
+
+	coroutine.waitforasyncop(AssetBundleManager:LoadSceneAsyncWithHandle(scene_config.Name), function(co, progress)
 		assert(progress <= 1.0, "What's the funck!!!")
 		model.value = cur_progress + 0.15 * progress
 	end)
@@ -168,6 +177,7 @@ local function CoInnerSwitchScene2(self, scene_config)
 	-- 准备工作：预加载资源等
 	-- 说明：现在的做法是不热更场景（都是空场景），所以主要的加载时间会放在场景资源的prefab上，这里给65%的进度时间
 	cur_progress = model.value
+	Logger.Log("5555555555555555555555555")
 	coroutine.yieldstart(logic_scene.CoOnPrepare, function(co, progress)
 		assert(progress <= 1.0, "Progress should be normalized value!!!")
 		model.value = cur_progress + 0.65 * progress

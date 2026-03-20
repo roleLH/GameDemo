@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using XLua;
 
 public static class GenConfig
@@ -31,6 +32,7 @@ public static class GenConfig
         typeof(WWW),
         typeof(List<int>),
         typeof(Action<string>),
+        typeof(Action<SceneInstance>),
         typeof(UnityEngine.Debug),
         typeof(Delegate),
         typeof(Dictionary<string, GameObject>),

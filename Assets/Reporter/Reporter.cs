@@ -247,7 +247,6 @@ public class Reporter : MonoBehaviour {
 	public Vector2 size = new Vector2( 32 , 32 ) ;
 	public float maxSize = 20 ;
 	public int numOfCircleToShow = 1 ;
-	string[] scenes ;
 	string   currentScene ;
 	string   filterText="";
 
@@ -300,7 +299,6 @@ public class Reporter : MonoBehaviour {
 			catch( System.Exception e ){
 				Debug.LogException( e );
 			}
-			scenes = new string[SceneManager.sceneCountInBuildSettings ];
 			currentScene = SceneManager.GetActiveScene().name;
 			DontDestroyOnLoad( gameObject );
 #if USE_OLD_UNITY
@@ -1257,15 +1255,6 @@ public class Reporter : MonoBehaviour {
 				memoryLabelRect.width = w - size.x ;
 			}
 			sceneRect = memoryRect ;
-			if( showScene ){
-				tempContent.text = scenes[ sample.loadedScene];
-				w = currentLogStyle.CalcSize( tempContent ).x + size.x;
-				sceneRect.x -= w ;
-				sceneRect.width = size.x ;
-				sceneLabelRect = sceneRect ;
-				sceneLabelRect.x+= size.x ;
-				sceneLabelRect.width = w - size.x ;
-			}
 			timeRect = sceneRect ;
 			if( showTime ){
 				tempContent.text = sample.time.ToString("0.000");
@@ -1287,10 +1276,6 @@ public class Reporter : MonoBehaviour {
 				if( showTime ){
 					GUI.Box(timeRect, showTimeContent ,currentLogStyle);
 					GUI.Label(timeLabelRect, sample.time.ToString("0.000") ,currentLogStyle   );
-				}
-				if( showScene ){
-					GUI.Box( sceneRect,showSceneContent ,currentLogStyle);
-					GUI.Label( sceneLabelRect ,scenes[ sample.loadedScene] ,currentLogStyle   );
 				}
 				if( showMemory ){
 					GUI.Box(memoryRect, showMemoryContent ,currentLogStyle );
@@ -1318,10 +1303,6 @@ public class Reporter : MonoBehaviour {
 				if( showTime ){
 					GUI.Box(timeRect, showTimeContent ,currentLogStyle) ;
 					GUI.Label(timeLabelRect, sample.time.ToString("0.000") ,currentLogStyle )  ;
-				}
-				if( showScene ){
-					GUI.Box(sceneRect, showSceneContent ,currentLogStyle) ;
-					GUI.Label( sceneLabelRect, scenes[ sample.loadedScene] ,currentLogStyle  ) ;
 				}
 				if( showMemory ){
 					GUI.Box( memoryRect, showMemoryContent ,currentLogStyle) ;
@@ -1432,10 +1413,6 @@ public class Reporter : MonoBehaviour {
 			GUILayout.Box( showTimeContent,nonStyle, GUILayout.Width(size.x) ,GUILayout.Height(size.y));
 			GUILayout.Label( selectedSample.time.ToString("0.0"),nonStyle );
 			GUILayout.Space( size.x );
-
-			GUILayout.Box( showSceneContent,nonStyle, GUILayout.Width(size.x) ,GUILayout.Height(size.y));
-			GUILayout.Label( scenes[ selectedSample.loadedScene],nonStyle );
-			GUILayout.Space( size.x );
 			
 			GUILayout.Box( showMemoryContent,nonStyle, GUILayout.Width(size.x) ,GUILayout.Height(size.y));
 			GUILayout.Label( selectedSample.memory.ToString("0.000") ,nonStyle);
@@ -1526,10 +1503,6 @@ public class Reporter : MonoBehaviour {
 			
 			GUILayout.Box( showTimeContent,nonStyle, GUILayout.Width(size.x) ,GUILayout.Height(size.y));
 			GUILayout.Label( selectedSample.time.ToString("0.000"),nonStyle );
-			GUILayout.Space( size.x );
-			
-			GUILayout.Box( showSceneContent,nonStyle, GUILayout.Width(size.x) ,GUILayout.Height(size.y));
-			GUILayout.Label( scenes[ selectedSample.loadedScene],nonStyle );
 			GUILayout.Space( size.x );
 			
 			GUILayout.Box( showMemoryContent,nonStyle, GUILayout.Width(size.x) ,GUILayout.Height(size.y));
@@ -1816,8 +1789,6 @@ public class Reporter : MonoBehaviour {
 		fpsText = fps.ToString("0.000");
 		gcTotalMemory = (((float)System.GC.GetTotalMemory(false))/1024/1024) ;
 		//addSample();
-		if( string.IsNullOrEmpty( scenes[ SceneManager.GetActiveScene().buildIndex ] ))
-			scenes[SceneManager.GetActiveScene().buildIndex] = SceneManager.GetActiveScene().name;
 
 		float elapsed = Time.realtimeSinceStartup - lastUpdate ;
 		fps = 1f / elapsed ;

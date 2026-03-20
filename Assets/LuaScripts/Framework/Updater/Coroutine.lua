@@ -290,7 +290,7 @@ local function __AsyncOpCheck(co, async_operation, callback)
 	if callback ~= nil then
 		callback(co, async_operation.progress)
 	end
-	return async_operation.isDone
+	return async_operation.isDone or async_operation.IsDone
 end
 
 -- 等待异步操作完成，并在Update执行完毕resume

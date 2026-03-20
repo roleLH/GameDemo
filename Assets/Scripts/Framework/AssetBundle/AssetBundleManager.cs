@@ -9,6 +9,8 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 using System.IO.Compression;
 using System.IO;
 using System.Security.Cryptography;
+using UnityEngine.ResourceManagement.ResourceProviders;
+
 
 
 
@@ -138,11 +140,41 @@ namespace AssetBundles
                     }
                 }
             }
+
+            //LoadSceneAsync("BattleScene");
         }
 
         public void UnloadAsset(AsyncOperationHandle handle)
         {
             Addressables.Release(handle);
+        }
+
+        public void LoadSceneAsync(string sceneId)
+        {
+            Debug.Log("load..." + sceneId);
+            var handle = Addressables.LoadSceneAsync(sceneId, UnityEngine.SceneManagement.LoadSceneMode.Single, true);
+            handle.Completed += (op) => {
+                var scene = op.Result;
+                //scene.ActivateAsync();
+            };
+        }
+
+        public AsyncOperationHandle LoadSceneAsyncWithHandle(string sceneId)
+        {
+           var handle = Addressables.LoadSceneAsync(sceneId, UnityEngine.SceneManagement.LoadSceneMode.Single, true);
+            handle.Completed += (op) => {
+                Debug.Log(op.IsDone);
+            };
+            return handle;
+        }
+
+        public void LoadSceneWithCallback(string sceneId, Action<SceneInstance> action)
+        {
+            var handle = Addressables.LoadSceneAsync(sceneId, UnityEngine.SceneManagement.LoadSceneMode.Single, true);
+            handle.Completed += (op) => {
+                var scene = op.Result;
+                action.Invoke(scene);
+            };
         }
 
         void Update()

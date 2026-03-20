@@ -156,7 +156,7 @@ public class XLuaManager : MonoSingleton<XLuaManager>
     {
         string scriptPath = string.Empty;
         filepath = filepath.Replace(".", "\\") + ".lua";
-#if UNITY_EDITOR && ANDROID
+#if UNITY_EDITOR 
         {
             scriptPath = Path.Combine(Application.dataPath, luaScriptsFolder);
             scriptPath = Path.Combine(scriptPath, filepath);

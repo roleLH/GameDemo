@@ -7,9 +7,9 @@ local refresh_btn_path = "ItemUI/RefreshBtn"
 local next_game_btn_path = "ItemUI/RefreshBtn2"
 local share_btn_path = "TopUI/UIShareBtn"
 
-local ice_grid_path = "UI/Prefabs/common/IceGrid.prefab"
-local gameplay_icon_path = "UI/Prefabs/common/GamePlayIcon.prefab"
-local waikuang_res_path = "UI/Prefabs/common/WaiKuang.prefab"
+local ice_grid_path = "UI/Prefabs/Common/IceGrid.prefab"
+local gameplay_icon_path = "UI/Prefabs/Common/GamePlayIcon.prefab"
+local waikuang_res_path = "UI/Prefabs/Common/WaiKuang.prefab"
 
 local block_res_path = "UI/Image/GamePlay"
 

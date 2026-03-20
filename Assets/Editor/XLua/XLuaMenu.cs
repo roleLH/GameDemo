@@ -9,7 +9,6 @@ using Debug = UnityEngine.Debug;
 [InitializeOnLoad]
 public static class XLuaMenu
 {
-    [MenuItem("XLua/Copy Lua Files To AssetsPackage", false, 51)]
     public static void CopyLuaFilesToAssetsPackage()
     {
         string destination = Path.Combine(Application.dataPath, "AssetsPackage");
