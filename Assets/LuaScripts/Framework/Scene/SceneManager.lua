@@ -168,10 +168,7 @@ local function CoInnerSwitchScene2(self, scene_config)
 	cur_progress = model.value
 	Logger.Log("444444444444444444")
 
-	coroutine.waitforasyncop(AssetBundleManager:LoadSceneAsyncWithHandle(scene_config.Name), function(co, progress)
-		assert(progress <= 1.0, "What's the funck!!!")
-		model.value = cur_progress + 0.15 * progress
-	end)
+	coroutine.waitforasyncop(AssetBundleManager:LoadSceneAsyncWithHandle(scene_config.Name))
 	model.value = cur_progress + 0.15
 	coroutine.waitforframes(1)
 	-- 准备工作：预加载资源等
