@@ -7,34 +7,9 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 [InitializeOnLoad]
-public static class XLuaMenu
+public class XLuaMenu
 {
-    public static void CopyLuaFilesToAssetsPackage()
-    {
-        string destination = Path.Combine(Application.dataPath, "AssetsPackage");
-        destination = Path.Combine(destination, XLuaManager.luaAssetbundleAssetName);
-        string source = Path.Combine(Application.dataPath, XLuaManager.luaScriptsFolder);
-        GameUtility.SafeDeleteDir(destination);
-
-        var files = Directory.GetFiles(source, "*.lua", SearchOption.AllDirectories);
-
-        foreach (var file in files)
-        {
-            // 相对路径
-            var relative = file.Replace(source, "").TrimStart('\\', '/');
-            var destPath = Path.Combine(destination, relative) + ".bytes";
-
-            var dir = Path.GetDirectoryName(destPath);
-            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-            File.Copy(file, destPath, true);
-        }
-
-        AssetDatabase.Refresh();
-        Debug.Log("Copy lua files over");
-    }
-
-    [MenuItem("XLua/Zip Lua Scripts", false, 52)]
+        [MenuItem("XLua/Zip Lua Scripts", false, 52)]
     public static void ZipLuaScripts()
     {
         string source = Path.Combine(Application.dataPath, XLuaManager.luaScriptsFolder);
@@ -67,7 +42,7 @@ public static class XLuaMenu
                     }
                 }
             }
-
+            Debug.Log("Zip Lua files success...");
         }
         catch (Exception e)
         {
